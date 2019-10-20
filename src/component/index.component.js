@@ -8,6 +8,7 @@ export default class Index extends Component {
     this.state = { users: [] }
   }
 
+  // work after render()
   componentDidMount() {
     axios.get('http://localhost:3004/users')
       .then(res => { this.setState({ users: res.data})})
@@ -24,9 +25,19 @@ export default class Index extends Component {
   //
   tRow() {
     return this.state.users.map((item, index) => {
-      return <TableRow key={index} obj={item} /> ;
+      return <TableRow key={index} obj={item} deleteRow={this.deleteRow} /> ;
     });
   }
+
+	// shoud use bind here to bind state to child
+  deleteRow = (id) => {
+    axios.delete('http://localhost:3004/users/'+ id)
+      .then(res => {
+        this.setState({ users: this.state.users.filter(e => e.id !== id) })
+      })
+      .catch(err => console.log(err))
+  }
+
 
   render() {
     return (
